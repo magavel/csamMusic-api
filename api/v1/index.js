@@ -145,6 +145,35 @@ router.get('/partitions/:id', (req, res) => {
 });
 
 /**
+ * Update partition
+ */
+router.put('/partitions/:id', uploadPartition.single('partitionFile'), (req, res)=>{
+    const id = req.params.id;
+    const condition = { _id:id };
+    //on ajoute au req.body le dernier fichier téléchargé.
+    const partition = {...req.body, partitionFile: lastUploadesPartition };
+    // $set permet d'attribuer une valeur a une variable
+    const update = { $set: partition};
+
+    //pour mongo db on utilise upsert ==> update-inserte pour dir que si
+    // le document n'existe pas on le créé.
+    const options = {
+        upsert: true,               //s'il nexiste pas on le crée
+        new:true                    // retourne à l'utilisateur le document une fois modifié
+    };
+    Partition.findOneAndUpdate(condition, update, options, (err, response)=>{
+        if(err) return res.status(500).json({msg:'pb update partition', err});
+        res.status(200).json({msg: `partition ${id} mise à jour`, response})
+    });
+});
+
+
+
+
+
+
+
+/**
  * Suppression d'un fichier par ID
  */
 router.delete('/partitions/:id', (req, res) => {
