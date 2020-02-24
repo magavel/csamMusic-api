@@ -119,6 +119,7 @@ router.post('/partitions', (req, res) => {
  * get de toutes les partitions
  */
 router.get('/partitions', (req, res) => {
+    console.log('req.user', req.user);
     Partition.find()                                               // methode qui renvoie tous les articles a chainer avec .exec si pad de cb ds le .find
         .sort({ 'createdOn': -1 })                                    //le tri avec .sort à -1 permet de trier du plus récent vers le plus vieux
         .exec()                                                     // il faut mettre exec car on n'a pas mis de call back ds le find()
